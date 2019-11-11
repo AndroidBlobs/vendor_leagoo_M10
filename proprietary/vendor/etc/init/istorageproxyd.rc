@@ -1,0 +1,15 @@
+on post-fs-data
+    write /proc/bootprof "start itrusty secure storage"
+    mkdir /data/trusty 0775 system system
+    mkdir /cache/trusty 0775 system system
+    mkdir /data/persist 0775 system system
+    mkdir /vendor/persist/rpmb 0771 system system
+    restorecon_recursive /vendor/persist
+    mkdir /data/vendor/thh 0755 system system
+    mkdir /data/vendor/thh/tee_00 0755 system system
+    restorecon_recursive /data/vendor/thh
+
+# Start storageproxyd Daemon
+service istorageproxyd /vendor/bin/istorageproxyd -d /dev/trusty-ipc-dev0 -p /data/trusty -r /dev/block/mmcblk0rpmb -v /vendor/persist/rpmb
+    group system
+    class late_start
